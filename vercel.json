@@ -1,8 +1,12 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "index.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["lib/**/*"]
+      }
     },
     {
       "src": "views/**",
@@ -15,7 +19,10 @@
       "dest": "/views/$1"
     },
     {
-      "src": "/(.*)",
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
       "dest": "index.ts"
     }
   ]
