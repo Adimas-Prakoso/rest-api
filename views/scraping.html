@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraping API Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: var(--bg-light);
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .nav-bar {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .home-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .endpoint-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .method-badge {
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .param-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .param-name {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .param-desc {
+            color: var(--secondary);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+            margin: 1.5rem 0;
+            line-height: 1.5;
+        }
+
+        .response-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .response-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-top: 4px solid var(--primary);
+        }
+
+        .response-status {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .response-desc {
+            color: var(--secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-light);
+        }
+
+        .feature-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .notes-section {
+            background: #dbeafe;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .notes-title {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .notes-list {
+            list-style: none;
+        }
+
+        .notes-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .notes-list li::before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+
+            .header {
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                border-radius: 0;
+            }
+
+            .endpoint-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .code-block {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="/" class="home-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </nav>
+
+        <div class="content">
+            <div class="header">
+                <h1>🕷️ Web Scraping API</h1>
+                <p>Extract structured data from any website with our powerful scraping API</p>
+            </div>
+
+            <div class="card">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-url">/scraping</span>
+                </div>
+
+                <h2>Request Parameters</h2>
+                <div class="param-card">
+                    <div class="param-name">url</div>
+                    <div class="param-desc">URL of the website to scrape (required)</div>
+                </div>
+
+                <h2>Example Request</h2>
+                <pre class="code-block">{
+    "url": "https://example.com"
+}</pre>
+
+                <h2>Example Response</h2>
+                <pre class="code-block">{
+    "title": "Example Website",
+    "description": "Website description from meta tags",
+    "links": [
+        {
+            "url": "https://example.com/page1",
+            "text": "Link Text"
+        }
+    ],
+    "images": [
+        {
+            "url": "https://example.com/image.jpg",
+            "alt": "Image description"
+        }
+    ],
+    "text": [
+        "Content from paragraph 1",
+        "Content from paragraph 2"
+    ]
+}</pre>
+
+                <h2>Response Codes</h2>
+                <div class="response-grid">
+                    <div class="response-card">
+                        <div class="response-status">200 Success</div>
+                        <div class="response-desc">Data successfully scraped from website</div>
+                    </div>
+                    <div class="response-card">
+                        <div class="response-status">400 Bad Request</div>
+                        <div class="response-desc">Invalid URL or URL not provided</div>
+                    </div>
+                    <div class="response-card">
+                        <div class="response-status">500 Server Error</div>
+                        <div class="response-desc">Failed to scrape website data</div>
+                    </div>
+                </div>
+
+                <h2>Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">Structured Data</div>
+                        <p>Extracts data in organized JSON format including title, description, links, and images</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">Meta Information</div>
+                        <p>Automatically captures meta tags and SEO-related information</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">Content Extraction</div>
+                        <p>Pulls text content from paragraphs and other relevant elements</p>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <h3 class="notes-title">Important Notes</h3>
+                    <ul class="notes-list">
+                        <li>URL must be valid and accessible</li>
+                        <li>Some websites may block scraping attempts</li>
+                        <li>Response time may vary based on website size and complexity</li>
+                        <li>Consider implementing rate limiting in your application</li>
+                        <li>Respect robots.txt and website terms of service</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

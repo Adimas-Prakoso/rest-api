@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doujindesu API Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: var(--bg-light);
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .nav-bar {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .home-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-section {
+            margin-bottom: 3rem;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .endpoint-header:hover {
+            background: #e2e8f0;
+        }
+
+        .method-badge {
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .endpoint-content {
+            display: none;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .endpoint-content.show {
+            display: block;
+        }
+
+        .params-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .params-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .param-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .param-name {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .param-desc {
+            color: var(--secondary);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+            margin: 1.5rem 0;
+            line-height: 1.5;
+        }
+
+        .response-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .response-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-top: 4px solid var(--primary);
+        }
+
+        .response-status {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .notes-section {
+            background: #dbeafe;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .notes-title {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .notes-list {
+            list-style: none;
+        }
+
+        .notes-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .notes-list li::before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+
+        .collapse-icon {
+            color: var(--secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+
+            .header {
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                border-radius: 0;
+            }
+
+            .endpoint-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .code-block {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="/" class="home-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </nav>
+
+        <div class="content">
+            <div class="header">
+                <h1>📚 Doujindesu API</h1>
+                <p>Access comprehensive doujinshi, manga, and manhwa data from doujindesu.tv</p>
+            </div>
+
+            <div class="card">
+                <div class="endpoint-section">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <span class="method-badge">GET</span>
+                        <span class="endpoint-url">/doujindesu/searchtype</span>
+                        <i class="fas fa-chevron-down collapse-icon"></i>
+                    </div>
+                    <div class="endpoint-content">
+                        <h2>Query Parameters</h2>
+                        <div class="params-grid">
+                            <div class="param-card">
+                                <div class="param-name">page</div>
+                                <div class="param-desc">Page number (default: 1)</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">type</div>
+                                <div class="param-desc">Content type (Doujinshi, Manga, Manhwa)</div>
+                            </div>
+                        </div>
+
+                        <h2>Example Response</h2>
+                        <pre class="code-block">{
+    "data": [
+        {
+            "thumbnail": "https://doujindesu.tv/uploads/xxxx.jpg",
+            "title": "Example Title",
+            "type": "Manhwa",
+            "chapter": "Chapter 1",
+            "updateTime": "NEW"
+        }
+    ]
+}</pre>
+                    </div>
+                </div>
+
+                <div class="endpoint-section">
+                    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+                        <span class="method-badge">GET</span>
+                        <span class="endpoint-url">/doujindesu/search</span>
+                        <i class="fas fa-chevron-down collapse-icon"></i>
+                    </div>
+                    <div class="endpoint-content">
+                        <h2>Query Parameters</h2>
+                        <div class="params-grid">
+                            <div class="param-card">
+                                <div class="param-name">title</div>
+                                <div class="param-desc">Title to search for</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">author</div>
+                                <div class="param-desc">Author name</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">character</div>
+                                <div class="param-desc">Character name</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">status</div>
+                                <div class="param-desc">Publication status</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">type</div>
+                                <div class="param-desc">Content type</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">genre</div>
+                                <div class="param-desc">Genres (array or comma-separated)</div>
+                            </div>
+                        </div>
+
+                        <h2>Example Response</h2>
+                        <pre class="code-block">{
+    "data": [
+        {
+            "thumbnail": "https://doujindesu.tv/uploads/xxxx.jpg",
+            "title": "Example Title",
+            "type": "Manga",
+            "rating": "4.5",
+            "status": "Publishing"
+        }
+    ]
+}</pre>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <h3 class="notes-title">Important Notes</h3>
+                    <ul class="notes-list">
+                        <li>Results are paginated with 20 items per page</li>
+                        <li>The type parameter is case-sensitive</li>
+                        <li>Data is scraped in real-time from doujindesu.tv</li>
+                        <li>Genre parameter accepts both array and comma-separated formats</li>
+                        <li>All parameters except page are optional for search endpoint</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleEndpoint(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.collapse-icon');
+            content.classList.toggle('show');
+            icon.classList.toggle('rotated');
+        }
+    </script>
+</body>
+</html>

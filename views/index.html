@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @media (max-width: 640px) {
+            .sm\:ml-64 {
+                margin-left: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tambahkan transisi smooth untuk sidebar */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        /* Custom scrollbar untuk sidebar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .placeholder-left::placeholder {
+            text-align: left;
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        /* Menyesuaikan padding input agar text tidak tumpang tindih dengan icon */
+        #searchInput {
+            text-indent: 25px; /* Sesuaikan nilai ini jika perlu */
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar - Modified for better mobile support -->
+    <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen -translate-x-full sm:translate-x-0 sidebar-transition">
+        <div class="h-full px-3 py-4 overflow-y-auto bg-white border-r sidebar-scroll">
+            <div class="flex items-center mb-5">
+                
+                <span class="text-xl font-semibold text-blue-600">API Dashboard</span>
+            </div>
+            <div class="space-y-1">
+                <a href="#" class="flex items-center p-2 text-white rounded-lg bg-blue-600 hover:bg-blue-700 group transition-colors">
+                    <i class="fas fa-chart-line w-5 h-5 text-white"></i>
+                    <span class="ml-3 font-medium">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                    <i class="fab fa-whatsapp w-5 h-5 text-blue-600"></i>
+                    <span class="ml-3 font-medium">Changelog / Channel WhatsApp</span>
+                </a>
+                <div class="pt-4 mt-4 border-t border-gray-200">
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-th-list w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">All Feature</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-mosque w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Islami</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-cloud-download-alt w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Downloader</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-info-circle w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Information</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-check-circle w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Checker</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-graduation-cap w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Education</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-book-reader w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Anime Manga</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-film w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Movie Story</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-search w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Searcher</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-text-height w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">TextPro.me</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-camera-retro w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Photo Oxy</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-image w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Ephoto360</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-camera w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Photofunia</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-random w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Random Image</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-quote-right w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Random Text</span>
+                    </a>
+                    <a href="#" class="flex items-center p-2 text-gray-800 rounded-lg hover:bg-blue-50 group transition-colors">
+                        <i class="fas fa-smile-beam w-5 h-5 text-blue-600"></i>
+                        <span class="ml-3 font-medium">Entertainment</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content - Modified for better responsiveness -->
+    <div class="p-4 sm:ml-64 transition-all duration-300">
+        <!-- Search Bar -->
+        <div class="mb-6 mt-1 sm:mt-0">
+            <div class="relative w-full">
+                <div class="flex items-center gap-2">
+                    <!-- Toggle Sidebar Button - Visible only on mobile -->
+                    <button id="sidebarToggle" class="p-3 rounded-lg bg-blue-600 text-white sm:hidden hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Search Bar -->
+                    <div class="relative flex-1">
+                        <input type="text" id="searchInput" 
+                            class="w-full p-3 sm:p-4 pl-10 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 focus:outline-none placeholder-left" 
+                            placeholder="Search API services...">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <div id="searchResults" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                            <div class="p-2">
+                                <div id="noResults" class="text-gray-500 text-sm p-2 text-center hidden">
+                                    Tidak ada hasil yang ditemukan
+                                </div>
+                                <div id="resultsList" class="max-h-60 overflow-y-auto">
+                                    <!-- Hasil pencarian akan ditampilkan di sini -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <div class="stats-header flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800">Statistics</h2>
+                <!-- Total requests akan ditambahkan di sini oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <!-- Storage Card -->
+            <div class="p-6 bg-white rounded-lg shadow">
+                <div class="flex items-center mb-4">
+                    <div class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-blue-600 bg-blue-100 rounded-lg">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="text-sm font-medium text-gray-500">Storage Used</div>
+                        <div class="text-2xl font-semibold" id="storageUsed">0%</div>
+                        <div class="text-xs text-gray-500" id="storageDetails"></div>
+                    </div>
+                </div>
+                <div class="h-64" id="storageGauge"></div>
+            </div>
+
+            <!-- RAM Card -->
+            <div class="p-6 bg-white rounded-lg shadow">
+                <div class="flex items-center mb-4">
+                    <div class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-green-600 bg-green-100 rounded-lg">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="text-sm font-medium text-gray-500">RAM Usage</div>
+                        <div class="text-2xl font-semibold" id="ramUsage">0%</div>
+                        <div class="text-xs text-gray-500" id="ramDetails"></div>
+                    </div>
+                </div>
+                <div class="h-64" id="ramGauge"></div>
+            </div>
+
+            <!-- CPU Card -->
+            <div class="p-6 bg-white rounded-lg shadow">
+                <div class="flex items-center mb-4">
+                    <div class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-purple-600 bg-purple-100 rounded-lg">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="text-sm font-medium text-gray-500">CPU Usage</div>
+                        <div class="text-2xl font-semibold" id="cpuUsage">0%</div>
+                    </div>
+                </div>
+                <div class="h-64" id="cpuGauge"></div>
+            </div>
+        </div>
+
+        <!-- Charts - Made responsive -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+                    <h3 class="text-base sm:text-lg font-semibold">Daily Requests (30 Days)</h3>
+                    <button onclick="toggleChartType('daily')" 
+                            class="px-3 py-1 text-sm text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 w-full sm:w-auto">
+                        Toggle Chart
+                    </button>
+                </div>
+                <div class="h-48 sm:h-64">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+                    <h3 class="text-base sm:text-lg font-semibold">Monthly Requests (1 Year)</h3>
+                    <button onclick="toggleChartType('monthly')" 
+                            class="px-3 py-1 text-sm text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 w-full sm:w-auto">
+                        Toggle Chart
+                    </button>
+                </div>
+                <div class="h-48 sm:h-64">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Services List - Made responsive -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 sm:p-6">
+                <div class="mb-6 sm:mb-8">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">API Usage Rules</h3>
+                    <div class="space-y-3 text-sm sm:text-base text-gray-600">
+                        <p class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Free to use for non-commercial projects
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Rate limit: 100 requests per minute
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Include attribution to the API in your project
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-yellow-500 mr-2"></i>
+                            Commercial use requires permission
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                            Reselling or redistributing the API is not allowed
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-50 rounded-lg space-y-4 sm:space-y-0">
+                    <div class="flex items-center">
+                        <img src="https://github.com/Adimas-Prakoso.png" alt="Adimas Prakoso" 
+                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full">
+                        <div class="ml-3">
+                            <p class="text-xs sm:text-sm text-gray-600">Created by</p>
+                            <a href="https://github.com/Adimas-Prakoso" target="_blank" 
+                               class="text-blue-600 hover:text-blue-700 font-medium flex items-center text-sm sm:text-base">
+                                Adimas Prakoso
+                                <i class="fab fa-github ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="https://sociabuzz.com/adimasprakoso" target="_blank" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto justify-center">
+                        <i class="fas fa-heart mr-2"></i>
+                        Support Project
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart configurations
+        let dailyChart, monthlyChart;
+        let dailyChartType = 'bar';
+        let monthlyChartType = 'bar';
+
+        // Initialize charts
+        function initializeCharts() {
+            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+
+            // Konfigurasi untuk chart
+            const chartConfig = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 50
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            };
+
+            dailyChart = new Chart(dailyCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Daily Requests',
+                        data: [],
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: chartConfig
+            });
+
+            monthlyChart = new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Monthly Requests',
+                        data: [],
+                        backgroundColor: 'rgba(147, 51, 234, 0.5)',
+                        borderColor: 'rgb(147, 51, 234)',
+                        borderWidth: 1
+                    }]
+                },
+                options: chartConfig
+            });
+        }
+
+        // Toggle chart type
+        function toggleChartType(chartId) {
+            if (chartId === 'daily') {
+                dailyChartType = dailyChartType === 'bar' ? 'line' : 'bar';
+                dailyChart.config.type = dailyChartType;
+                dailyChart.update();
+            } else {
+                monthlyChartType = monthlyChartType === 'bar' ? 'line' : 'bar';
+                monthlyChart.config.type = monthlyChartType;
+                monthlyChart.update();
+            }
+        }
+
+        // Initialize gauge charts
+        function initializeGauges() {
+            const gaugeOptions = {
+                chart: {
+                    height: 250,
+                    type: 'radialBar',
+                    sparkline: {
+                        enabled: true
+                    }
+                },
+                colors: ['#3B82F6'],
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        track: {
+                            background: '#e7e7e7',
+                            strokeWidth: '97%',
+                            margin: 5,
+                            dropShadow: {
+                                enabled: true,
+                                blur: 2,
+                                opacity: 0.15
+                            }
+                        },
+                        dataLabels: {
+                            name: {
+                                show: false
+                            },
+                            value: {
+                                offsetY: 10,
+                                fontSize: '24px',
+                                fontWeight: 600,
+                                formatter: function(val) {
+                                    return val + '%';
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        type: 'horizontal',
+                        shadeIntensity: 0.5,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 100]
+                    }
+                },
+                stroke: {
+                    lineCap: 'round'
+                },
+                grid: {
+                    padding: {
+                        top: -10
+                    }
+                },
+                series: [0],
+                labels: ['']
+            };
+
+            // Storage gauge
+            const storageOptions = {
+                ...gaugeOptions,
+                colors: ['#3B82F6']
+            };
+            const storageChart = new ApexCharts(document.getElementById('storageGauge'), storageOptions);
+            storageChart.render();
+
+            // RAM gauge
+            const ramOptions = {
+                ...gaugeOptions,
+                colors: ['#22C55E']
+            };
+            const ramChart = new ApexCharts(document.getElementById('ramGauge'), ramOptions);
+            ramChart.render();
+
+            // CPU gauge
+            const cpuOptions = {
+                ...gaugeOptions,
+                colors: ['#9333EA']
+            };
+            const cpuChart = new ApexCharts(document.getElementById('cpuGauge'), cpuOptions);
+            cpuChart.render();
+
+            // Simpan referensi chart untuk update nanti
+            window.gaugeCharts = {
+                storage: storageChart,
+                ram: ramChart,
+                cpu: cpuChart
+            };
+        }
+
+        // Update fungsi updateGauge
+        function updateGauge(gaugeId, value) {
+            const chartMap = {
+                'storageGauge': 'storage',
+                'ramGauge': 'ram',
+                'cpuGauge': 'cpu'
+            };
+            
+            const chart = window.gaugeCharts[chartMap[gaugeId]];
+            if (chart) {
+                chart.updateSeries([Math.round(value)]);
+            }
+        }
+
+        // Search services
+        function searchServices(query) {
+            const cards = document.querySelectorAll('.api-service-card');
+            query = query.toLowerCase();
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.service-title').textContent.toLowerCase();
+                const description = card.querySelector('.service-description').textContent.toLowerCase();
+                
+                if (title.includes(query) || description.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Fetch and update statistics
+        async function fetchStatistics() {
+            try {
+                const response = await fetch('statistics');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const { stats, systemStats } = result;
+                    
+                    // Update total requests
+                    const statsHeader = document.querySelector('.stats-header');
+                    const existingTotal = statsHeader.querySelector('.text-sm');
+                    if (existingTotal) {
+                        existingTotal.textContent = `Total Requests: ${stats.totalRequests}`;
+                    } else {
+                        const totalRequestsEl = document.createElement('div');
+                        totalRequestsEl.className = 'text-sm text-gray-600 mt-2';
+                        totalRequestsEl.textContent = `Total Requests: ${stats.totalRequests}`;
+                        statsHeader.appendChild(totalRequestsEl);
+                    }
+                    
+                    // Update gauges dan teks
+                    document.getElementById('storageUsed').textContent = `${systemStats.storage.usagePercentage.toFixed(1)}%`;
+                    document.getElementById('ramUsage').textContent = `${systemStats.memory.usagePercentage.toFixed(1)}%`;
+                    document.getElementById('cpuUsage').textContent = `${systemStats.cpu.usagePercentage.toFixed(1)}%`;
+
+                    // Update details
+                    document.getElementById('storageDetails').textContent = 
+                        `${systemStats.storage.used} / ${systemStats.storage.total}`;
+                    document.getElementById('ramDetails').textContent = 
+                        `${systemStats.memory.used} / ${systemStats.memory.total}`;
+
+                    // Update gauge charts dengan animasi
+                    updateGauge('storageGauge', systemStats.storage.usagePercentage);
+                    updateGauge('ramGauge', systemStats.memory.usagePercentage);
+                    updateGauge('cpuGauge', systemStats.cpu.usagePercentage);
+
+                    // Update charts
+                    updateDailyChart(stats.dailyStats);
+                    updateMonthlyChart(stats.monthlyStats);
+                }
+            } catch (error) {
+                console.error('Error fetching statistics:', error);
+            }
+        }
+
+        // Update daily chart
+        function updateDailyChart(dailyStats) {
+            const monthData = dailyStats['2024-12']; // Sesuaikan dengan data yang ada
+            
+            const labels = Object.keys(monthData).map(date => {
+                const day = date.split('-')[2];
+                return `${day} Dec`; // Menampilkan format "24 Dec"
+            });
+            const data = Object.values(monthData);
+
+            dailyChart.data.labels = labels;
+            dailyChart.data.datasets[0].data = data;
+            dailyChart.update();
+        }
+
+        // Update monthly chart
+        function updateMonthlyChart(monthlyStats) {
+            const yearData = monthlyStats['2024'];
+            
+            const labels = Object.keys(yearData).map(month => {
+                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return monthNames[parseInt(month.split('-')[1]) - 1];
+            });
+            const data = Object.values(yearData);
+
+            monthlyChart.data.labels = labels;
+            monthlyChart.data.datasets[0].data = data;
+            monthlyChart.update();
+        }
+
+        // Update API services list
+        function updateApiServices(services) {
+            const container = document.getElementById('apiServicesList');
+            container.innerHTML = '';
+
+            services.forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'api-service-card p-4 bg-white border rounded-lg shadow-sm';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                                <i class="fas ${service.icon}"></i>
+                            </div>
+                            <div class="ml-3 flex items-center">
+                                <h4 class="service-title font-semibold">${service.name}</h4>
+                                <span class="ml-2 w-2 h-2 rounded-full ${service.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="service-description text-sm text-gray-600 mb-3">${service.description}</p>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="text-gray-500">
+                            <span>Requests:</span>
+                            <span class="font-medium text-gray-900">${service.requests.toLocaleString()}</span>
+                        </div>
+                        <div class="text-gray-500">
+                            <span>Avg. Latency:</span>
+                            <span class="font-medium text-gray-900">${service.avgLatency}ms</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Update event listener untuk menggunakan tombol yang benar
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.querySelector('.flex.items-center.gap-2 #sidebarToggle');
+        const mainContent = document.querySelector('.sm\\:ml-64');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 640) {
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        });
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 640) {
+                sidebar.classList.remove('-translate-x-full');
+            }
+        });
+
+        // Adjust chart responsiveness
+        function updateChartResponsiveness() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: window.innerWidth < 640 ? 10 : 12
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: window.innerWidth < 640 ? 10 : 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: window.innerWidth < 640 ? 10 : 12
+                            }
+                        }
+                    }
+                }
+            };
+
+            if (dailyChart) {
+                dailyChart.options = chartOptions;
+                dailyChart.update();
+            }
+            if (monthlyChart) {
+                monthlyChart.options = chartOptions;
+                monthlyChart.update();
+            }
+        }
+
+        // Update chart responsiveness on window resize
+        window.addEventListener('resize', updateChartResponsiveness);
+
+        // Initialize with responsive settings
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCharts();
+            initializeGauges();
+            fetchStatistics();
+            updateChartResponsiveness();
+            setInterval(fetchStatistics, 30000);
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const noResults = document.getElementById('noResults');
+        const resultsList = document.getElementById('resultsList');
+
+        // Data API services (contoh)
+        const apiServices = [
+            { name: 'Islami API', category: 'Islami', description: 'API untuk layanan islami' },
+            { name: 'Downloader API', category: 'Downloader', description: 'API untuk download media' },
+            { name: 'Information API', category: 'Information', description: 'API untuk informasi' },
+            // Tambahkan data API lainnya sesuai kebutuhan
+        ];
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                searchResults.classList.add('hidden');
+                return;
+            }
+
+            const filteredResults = apiServices.filter(service => 
+                service.name.toLowerCase().includes(searchTerm) || 
+                service.category.toLowerCase().includes(searchTerm) ||
+                service.description.toLowerCase().includes(searchTerm)
+            );
+
+            displayResults(filteredResults);
+        });
+
+        function displayResults(results) {
+            resultsList.innerHTML = '';
+            
+            if (results.length === 0) {
+                noResults.classList.remove('hidden');
+                resultsList.classList.add('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                resultsList.classList.remove('hidden');
+                
+                results.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'p-2 hover:bg-gray-50 cursor-pointer rounded transition-colors';
+                    resultItem.innerHTML = `
+                        <div class="font-medium text-blue-600">${result.name}</div>
+                        <div class="text-sm text-gray-600">${result.category}</div>
+                        <div class="text-xs text-gray-500">${result.description}</div>
+                    `;
+                    
+                    resultItem.addEventListener('click', () => {
+                        searchInput.value = result.name;
+                        searchResults.classList.add('hidden');
+                        // Tambahkan aksi yang diinginkan saat hasil dipilih
+                    });
+                    
+                    resultsList.appendChild(resultItem);
+                });
+            }
+            
+            searchResults.classList.remove('hidden');
+        }
+
+        // Sembunyikan hasil pencarian saat klik di luar
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        // Tambahkan event listener untuk keyboard navigation
+        searchInput.addEventListener('keydown', (e) => {
+            const items = resultsList.children;
+            const currentIndex = Array.from(items).findIndex(item => item.classList.contains('bg-blue-50'));
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (currentIndex < items.length - 1) {
+                        if (currentIndex >= 0) items[currentIndex].classList.remove('bg-blue-50');
+                        items[currentIndex + 1].classList.add('bg-blue-50');
+                        items[currentIndex + 1].scrollIntoView({ block: 'nearest' });
+                    }
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (currentIndex > 0) {
+                        items[currentIndex].classList.remove('bg-blue-50');
+                        items[currentIndex - 1].classList.add('bg-blue-50');
+                        items[currentIndex - 1].scrollIntoView({ block: 'nearest' });
+                    }
+                    break;
+                    
+                case 'Enter':
+                    if (currentIndex >= 0) {
+                        items[currentIndex].click();
+                    }
+                    break;
+                    
+                case 'Escape':
+                    searchResults.classList.add('hidden');
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Service API Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: var(--bg-light);
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .nav-bar {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .method-badge {
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            color: var(--secondary);
+        }
+
+        .params-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .param-card {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .param-name {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+            margin: 1.5rem 0;
+        }
+
+        .response-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .response-card {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .response-status {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .notes-section {
+            background: #dbeafe;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .notes-title {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .notes-list {
+            list-style: none;
+        }
+
+        .notes-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .notes-list li::before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+
+            .params-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .endpoint-section {
+            margin-bottom: 1rem;
+        }
+
+        .endpoint-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .endpoint-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .endpoint-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .endpoint-content {
+            transition: max-height 0.3s ease-out;
+            max-height: 2000px;
+            overflow: hidden;
+        }
+
+        .endpoint-content.collapsed {
+            max-height: 0;
+        }
+
+        .toggle-button {
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .toggle-button:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .toggle-button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="/" class="home-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </nav>
+
+        <div class="content">
+            <div class="header">
+                <h1>🔐 Send OTP Service</h1>
+                <p>Send OTP to your email, whatsapp, and phone number with our REST API</p>
+            </div>
+
+            <div class="card">
+                <div class="endpoint-section">
+                    <div class="endpoint-header">
+                        <i class="fas fa-chevron-down"></i>
+                        <span class="method-badge">POST</span>
+                        <span class="endpoint-url">/send-email</span>
+                    </div>
+
+                    <div class="endpoint-content">
+                        <h2>Request Parameters</h2>
+                        <div class="params-grid">
+                            <div class="param-card">
+                                <div class="param-name">to</div>
+                                <div class="param-desc">Recipient email address (required)</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">subject</div>
+                                <div class="param-desc">Email subject line (required)</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">text</div>
+                                <div class="param-desc">Plain text content of the email (required)</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-name">html</div>
+                                <div class="param-desc">HTML content of the email (optional)</div>
+                            </div>
+                        </div>
+
+                        <h2>Example Request</h2>
+                        <pre class="code-block">{
+    "to": "recipient@example.com",
+    "subject": "Test Email",
+    "text": "This is a test email",
+    "html": "<span id="htmlContent">&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Email Verification&lt;/title&gt;&lt;/head&gt;&lt;body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'&gt;&lt;div style='max-width: 600px; margin: 0 auto; padding: 20px;'&gt;&lt;h1 style='color: #2563eb;'&gt;Welcome to Our Service!&lt;/h1&gt;&lt;p&gt;Hello,&lt;/p&gt;&lt;p&gt;Thank you for registering. Please verify your email address by clicking the button below:&lt;/p&gt;&lt;div style='text-align: center; margin: 30px 0;'&gt;&lt;a href='#' style='background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;'&gt;Verify Email&lt;/a&gt;&lt;/div&gt;&lt;p&gt;If the button doesn't work, you can also click this link: &lt;a href='#' style='color: #2563eb;'&gt;https://example.com/verify&lt;/a&gt;&lt;/p&gt;&lt;p&gt;This link will expire in 24 hours.&lt;/p&gt;&lt;hr style='border: 1px solid #eee; margin: 20px 0;'&gt;&lt;p style='color: #666; font-size: 12px;'&gt;If you didn't create an account, you can safely ignore this email.&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span>"
+}</pre>
+
+                        <button id="toggleButton" onclick="toggleHtmlFormat()" class="toggle-button">Show Html Format</button>
+
+                        <div id="htmlPreview" style="display: none;">
+                            <h3>HTML Code Preview Above Looks Like This:</h3>
+                            <!DOCTYPE html><html><head><title>Email Verification</title></head><body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'><div style='max-width: 600px; margin: 0 auto; padding: 20px;'><h1 style='color: #2563eb;'>Welcome to Our Service!</h1><p>Hello,</p><p>Thank you for registering. Please verify your email address by clicking the button below:</p><div style='text-align: center; margin: 30px 0;'><a href='#' style='background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;'>Verify Email</a></div><p>If the button doesn't work, you can also click this link: <a href='#' style='color: #2563eb;'>https://example.com/verify</a></p><p>This link will expire in 24 hours.</p><hr style='border: 1px solid #eee; margin: 20px 0;'><p style='color: #666; font-size: 12px;'>If you didn't create an account, you can safely ignore this email.</p></div></body></html>
+                        </div>
+
+                        <h2>Response Codes</h2>
+                        <div class="response-grid">
+                            <div class="response-card">
+                                <div class="response-status">200 Success</div>
+                                <div class="response-desc">Email sent successfully</div>
+                            </div>
+                            <div class="response-card">
+                                <div class="response-status">400 Bad Request</div>
+                                <div class="response-desc">Missing required parameters</div>
+                            </div>
+                            <div class="response-card">
+                                <div class="response-status">500 Server Error</div>
+                                <div class="response-desc">Failed to send email</div>
+                            </div>
+                        </div>
+
+                        <div class="notes-section">
+                            <h3 class="notes-title">Important Notes</h3>
+                            <ul class="notes-list">
+                                <li>All fields except 'html' are required</li>
+                                <li>The 'html' field is optional but recommended for better email formatting</li>
+                                <li>Emails are sent using NodeMailer with SMTP</li>
+                                <li>Make sure to handle the response appropriately in your application</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript untuk expand/minimize
+        document.querySelectorAll('.endpoint-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                header.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            });
+        });
+
+        function toggleHtmlFormat() {
+            const htmlPreview = document.getElementById('htmlPreview');
+            const toggleButton = document.getElementById('toggleButton');
+            
+            if (toggleButton.textContent === 'Show Html Format') {
+                htmlPreview.style.display = 'block';
+                toggleButton.textContent = 'Hide Html Format';
+            } else {
+                htmlPreview.style.display = 'none';
+                toggleButton.textContent = 'Show Html Format';
+            }
+        }
+    </script>
+</body>
+</html>
