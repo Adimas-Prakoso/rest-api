@@ -6,9 +6,9 @@ import { getTypeDoujindesu, searchDoujin } from './lib/doujindesu';
 import { scrapeWebsite } from './lib/scraping';
 import { trackRequest, getStatistics } from './lib/statistics';
 import axios from 'axios';
-import * as os from 'os';
-import * as osu from 'node-os-utils';
-import { execSync } from 'child_process';
+// import * as os from 'os';
+// import * as osu from 'node-os-utils';
+// import { execSync } from 'child_process';
 
 
 const app = new Hono();
@@ -225,49 +225,49 @@ app.get('/video', async (c) => {
 app.get('/statistics', async (c) => {
   try {
     const stats = await getStatistics();
-    // Get CPU usage
-    const cpuUsage = await new Promise<number>((resolve) => {
-      osu.cpu.usage().then(cpuPercentage => {
-        resolve(Number(cpuPercentage.toFixed(2)));
-      });
-    });
+    // // Get CPU usage
+    // const cpuUsage = await new Promise<number>((resolve) => {
+    //   osu.cpu.usage().then(cpuPercentage => {
+    //     resolve(Number(cpuPercentage.toFixed(2)));
+    //   });
+    // });
 
-    // Get memory information
-    const totalMemory = os.totalmem();
-    const freeMemory = os.freemem();
-    const usedMemory = totalMemory - freeMemory;
-    const memoryUsagePercent = Number(((usedMemory / totalMemory) * 100).toFixed(2));
+    // // Get memory information
+    // const totalMemory = os.totalmem();
+    // const freeMemory = os.freemem();
+    // const usedMemory = totalMemory - freeMemory;
+    // const memoryUsagePercent = Number(((usedMemory / totalMemory) * 100).toFixed(2));
 
-    // Get storage information using df command
-    const dfOutput = execSync('df / --output=size,used').toString();
-    const [, dfData] = dfOutput.trim().split('\n');
-    const [totalBlocks, usedBlocks] = dfData.trim().split(/\s+/).map(Number);
-    const blockSize = 1024; // df uses 1K blocks by default
+    // // Get storage information using df command
+    // const dfOutput = execSync('df / --output=size,used').toString();
+    // const [, dfData] = dfOutput.trim().split('\n');
+    // const [totalBlocks, usedBlocks] = dfData.trim().split(/\s+/).map(Number);
+    // const blockSize = 1024; // df uses 1K blocks by default
     
-    const totalStorage = totalBlocks * blockSize;
-    const usedStorage = usedBlocks * blockSize;
-    const storageUsagePercent = Number(((usedStorage / totalStorage) * 100).toFixed(2));
+    // const totalStorage = totalBlocks * blockSize;
+    // const usedStorage = usedBlocks * blockSize;
+    // const storageUsagePercent = Number(((usedStorage / totalStorage) * 100).toFixed(2));
 
     await trackRequest('/statistics', 'GET');
     
     return c.json({
       success: true,
       stats,
-      systemStats: {
-        cpu: {
-          usagePercentage: cpuUsage
-        },
-        memory: {
-          usagePercentage: memoryUsagePercent,
-          total: `${(totalMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`,
-          used: `${(usedMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`
-        },
-        storage: {
-          usagePercentage: storageUsagePercent,
-          total: `${(totalStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`,
-          used: `${(usedStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`
-        }
-      }
+      // systemStats: {
+      //   cpu: {
+      //     usagePercentage: cpuUsage
+      //   },
+      //   memory: {
+      //     usagePercentage: memoryUsagePercent,
+      //     total: `${(totalMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`,
+      //     used: `${(usedMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`
+      //   },
+      //   storage: {
+      //     usagePercentage: storageUsagePercent,
+      //     total: `${(totalStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`,
+      //     used: `${(usedStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`
+      //   }
+      // }
     });
   } catch (error: any) {
     return c.json({
