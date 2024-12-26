@@ -3,9 +3,17 @@
     {
       "src": "index.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "views/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/views/(.*)",
+      "dest": "/views/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "index.ts"
