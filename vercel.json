@@ -1,29 +1,11 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["lib/**/*"]
-      }
-    },
-    {
-      "src": "views/**",
-      "use": "@vercel/static"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ],
-  "routes": [
-    {
-      "src": "/views/(.*)",
-      "dest": "/views/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/.*",
-      "dest": "index.ts"
-    }
+  "redirects": [
+    { "source": "/", "destination": "/api", "permanent": false }
   ]
 }

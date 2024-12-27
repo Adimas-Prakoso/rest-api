@@ -1,21 +1,31 @@
 import { Hono } from 'hono';
+import { handle } from 'hono/vercel';
 import { cors } from 'hono/cors';
-import { serveStatic } from '@hono/node-server/serve-static';
-import { sendEmail } from './lib/sendMail';
-import { getTypeDoujindesu, searchDoujin } from './lib/doujindesu';
-import { scrapeWebsite } from './lib/scraping';
-import { trackRequest, getStatistics } from './lib/statistics';
+import { sendEmail } from './api/sendMail';
+import { getTypeDoujindesu, searchDoujin } from './api/doujindesu';
+import { scrapeWebsite } from './api/scraping';
+import { trackRequest, getStatistics } from './api/statistics';
 import axios from 'axios';
-// import * as os from 'os';
-// import * as osu from 'node-os-utils';
-// import { execSync } from 'child_process';
+import * as os from 'os';
+import * as osu from 'node-os-utils';
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-
-const app = new Hono();
+const app = new Hono().basePath('/api');
 
 // Middleware
 app.use('*', cors());
-app.use('/*', serveStatic({ root: './views' }));
+
+// Helper function to read HTML files
+const getHtmlContent = (filename: string) => {
+  try {
+    return readFileSync(join(process.cwd(), 'views', filename), 'utf-8');
+  } catch (error) {
+    console.error(`Error reading file ${filename}:`, error);
+    return null;
+  }
+};
 
 // Send Email API
 app.post('/send-email', async (c) => {
@@ -36,16 +46,33 @@ app.post('/send-email', async (c) => {
   }
 });
 
-// Documentation Send Email
+// Documentation routes
 app.get('/verifications', async (c) => {
   await trackRequest('/verifications', 'GET');
-  return c.html(await Bun.file('./views/verifications.html').text());
+  const htmlContent = getHtmlContent('verifications.html');
+  if (!htmlContent) {
+    return c.json({ error: 'File not found' }, 404);
+  }
+  return c.html(htmlContent);
 });
 
-// Doujindesu API Documentation
 app.get('/doujindesu', async (c) => {
   await trackRequest('/doujindesu', 'GET');
-  return c.html(await Bun.file('./views/doujindesu.html').text());
+  const htmlContent = getHtmlContent('doujindesu.html');
+  if (!htmlContent) {
+    return c.json({ error: 'File not found' }, 404);
+  }
+  return c.html(htmlContent);
+});
+
+// Root route for index.html
+app.get('/', async (c) => {
+  await trackRequest('/', 'GET');
+  const htmlContent = getHtmlContent('index.html');
+  if (!htmlContent) {
+    return c.json({ error: 'File not found' }, 404);
+  }
+  return c.html(htmlContent);
 });
 
 // Search By Type From Doujindesu.tv
@@ -143,7 +170,11 @@ app.post('/scraping', async (c) => {
 // Dokumentasi Scraping Api
 app.get('/scraping', async (c) => {
   await trackRequest('/scraping', 'GET');
-  return c.html(await Bun.file('./views/scraping.html').text());
+  const htmlContent = getHtmlContent('scraping.html');
+  if (!htmlContent) {
+    return c.json({ error: 'File not found' }, 404);
+  }
+  return c.html(htmlContent);
 });
 
 // Show Image From Url
@@ -225,49 +256,49 @@ app.get('/video', async (c) => {
 app.get('/statistics', async (c) => {
   try {
     const stats = await getStatistics();
-    // // Get CPU usage
-    // const cpuUsage = await new Promise<number>((resolve) => {
-    //   osu.cpu.usage().then(cpuPercentage => {
-    //     resolve(Number(cpuPercentage.toFixed(2)));
-    //   });
-    // });
+    // Get CPU usage
+    const cpuUsage = await new Promise<number>((resolve) => {
+      osu.cpu.usage().then(cpuPercentage => {
+        resolve(Number(cpuPercentage.toFixed(2)));
+      });
+    });
 
-    // // Get memory information
-    // const totalMemory = os.totalmem();
-    // const freeMemory = os.freemem();
-    // const usedMemory = totalMemory - freeMemory;
-    // const memoryUsagePercent = Number(((usedMemory / totalMemory) * 100).toFixed(2));
+    // Get memory information
+    const totalMemory = os.totalmem();
+    const freeMemory = os.freemem();
+    const usedMemory = totalMemory - freeMemory;
+    const memoryUsagePercent = Number(((usedMemory / totalMemory) * 100).toFixed(2));
 
-    // // Get storage information using df command
-    // const dfOutput = execSync('df / --output=size,used').toString();
-    // const [, dfData] = dfOutput.trim().split('\n');
-    // const [totalBlocks, usedBlocks] = dfData.trim().split(/\s+/).map(Number);
-    // const blockSize = 1024; // df uses 1K blocks by default
+    // Get storage information using df command
+    const dfOutput = execSync('df / --output=size,used').toString();
+    const [, dfData] = dfOutput.trim().split('\n');
+    const [totalBlocks, usedBlocks] = dfData.trim().split(/\s+/).map(Number);
+    const blockSize = 1024; // df uses 1K blocks by default
     
-    // const totalStorage = totalBlocks * blockSize;
-    // const usedStorage = usedBlocks * blockSize;
-    // const storageUsagePercent = Number(((usedStorage / totalStorage) * 100).toFixed(2));
+    const totalStorage = totalBlocks * blockSize;
+    const usedStorage = usedBlocks * blockSize;
+    const storageUsagePercent = Number(((usedStorage / totalStorage) * 100).toFixed(2));
 
     await trackRequest('/statistics', 'GET');
     
     return c.json({
       success: true,
       stats,
-      // systemStats: {
-      //   cpu: {
-      //     usagePercentage: cpuUsage
-      //   },
-      //   memory: {
-      //     usagePercentage: memoryUsagePercent,
-      //     total: `${(totalMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`,
-      //     used: `${(usedMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`
-      //   },
-      //   storage: {
-      //     usagePercentage: storageUsagePercent,
-      //     total: `${(totalStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`,
-      //     used: `${(usedStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`
-      //   }
-      // }
+      systemStats: {
+        cpu: {
+          usagePercentage: cpuUsage
+        },
+        memory: {
+          usagePercentage: memoryUsagePercent,
+          total: `${(totalMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`,
+          used: `${(usedMemory / (1024 * 1024 * 1024)).toFixed(2)}GB`
+        },
+        storage: {
+          usagePercentage: storageUsagePercent,
+          total: `${(totalStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`,
+          used: `${(usedStorage / (1024 * 1024 * 1024)).toFixed(2)}GB`
+        }
+      }
     });
   } catch (error: any) {
     return c.json({
@@ -278,4 +309,10 @@ app.get('/statistics', async (c) => {
   }
 });
 
-export default app;
+const handler = handle(app);
+
+export const GET = handler;
+export const POST = handler;
+export const PATCH = handler;
+export const PUT = handler;
+export const OPTIONS = handler;
