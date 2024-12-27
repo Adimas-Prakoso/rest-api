@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
 import { cors } from 'hono/cors';
-import { sendEmail } from './api/sendMail';
-import { getTypeDoujindesu, searchDoujin } from './api/doujindesu';
-import { scrapeWebsite } from './api/scraping';
-import { trackRequest, getStatistics } from './api/statistics';
+import { sendEmail } from './lib/sendMail';
+import { getTypeDoujindesu, searchDoujin } from './lib/doujindesu';
+import { scrapeWebsite } from './lib/scraping';
+import { trackRequest, getStatistics } from './lib/statistics';
 import axios from 'axios';
 import * as os from 'os';
 import * as osu from 'node-os-utils';
